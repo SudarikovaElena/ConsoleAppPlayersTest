@@ -44,8 +44,8 @@ public class PlayerServiceTest {
     }
 
     @Test
-    @Tag("позитивные")
-    @Disabled("Jira-123")
+    @Tags({ @Tag("негативный"), @Tag("CRITICAL") } )
+    //@Disabled("Jira-123")
     @DisplayName("Создаем игрока и проверяем его значения по дефолту")
     public void iCanAddNewPlayer() {
         Collection<Player> listBefore = service.getPlayers();
@@ -69,7 +69,7 @@ public class PlayerServiceTest {
     }
 
     @Test
-    @Tags({ @Tag("негативный"), @Tag("CRITICAL") } )
+    @Tag("позитивные")
     @DisplayName("Нельзя получить несуществующего пользователя")
     public void iCannotGetEmptyUser() {
         assertThrows(IllegalArgumentException.class, () -> service.getPlayerById(9999));
@@ -105,6 +105,22 @@ public class PlayerServiceTest {
         service.addPoints(id, pointsToAdd);
         Player playerById = service.getPlayerById(id);
         assertEquals(pointsToBe, playerById.getPoints());
+    }
+
+    @Test
+    @Tag("позитивные")
+    @DisplayName("Удаление игрока")
+    public void iCanDeletePlayer() {
+        Collection<Player> listBefore = service.getPlayers();
+        assertEquals(0, listBefore.size());
+
+        int nikitaId = service.createPlayer(NICKNAME);
+        Player playerById = service.getPlayerById(nikitaId);
+        assertEquals(nikitaId, playerById.getId());
+
+        service.deletePlayer(playerById.getId());
+        Collection<Player> listAfter = service.getPlayers();
+        assertEquals(0, listAfter.size());
     }
 
 }
