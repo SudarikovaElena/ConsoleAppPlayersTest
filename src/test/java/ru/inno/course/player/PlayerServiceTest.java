@@ -46,7 +46,7 @@ public class PlayerServiceTest {
     }
 
     @Test
-    @Tags({@Tag("негативный"), @Tag("CRITICAL")})
+    @Tags({@Tag("позитивный"), @Tag("CRITICAL")})
     //@Disabled("Jira-123")
     @DisplayName("Создаем игрока и проверяем его значения по дефолту")
     public void iCanAddNewPlayer() {
