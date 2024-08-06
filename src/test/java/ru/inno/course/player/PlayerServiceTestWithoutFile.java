@@ -1,9 +1,6 @@
 package ru.inno.course.player;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import ru.inno.course.player.model.Player;
 import ru.inno.course.player.service.PlayerService;
 import ru.inno.course.player.service.PlayerServiceImpl;
@@ -16,8 +13,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PlayerServiceTestWithoutFile {
 
@@ -58,6 +54,7 @@ public class PlayerServiceTestWithoutFile {
     @DisplayName("Списка нет - добавление игроку очков") // Нужно делать, когда список есть? Когда можем взять одного из игроков
     // узнать сколько у него очков и добавить? Нет, это может быть уже повторное добавление очков, нам нужно убдитьсся что игроку
     //еще не добавлялись очки, т.е. нужно таки создать его с нуля в этом же тесте
+    @Tag("позитивные")
     public void iCanAddPoints() {
         int playerId = service.createPlayer(NICKNAME1);
         Player player = service.getPlayerById(playerId);
@@ -67,6 +64,7 @@ public class PlayerServiceTestWithoutFile {
 
     @Test
     @DisplayName("Списка нет - получение коллекции игроков")
+    @Tag("позитивные")
     public void iCanGetPlayers() {
         int player1Id = service.createPlayer(NICKNAME1);
         int player2Id = service.createPlayer(NICKNAME2);
@@ -81,6 +79,7 @@ public class PlayerServiceTestWithoutFile {
 
     @Test
     @DisplayName("Списка нет - удаление игрока")
+    @Tag("позитивные")
     public void iCanDeletePlayer() {
         int playerId = service.createPlayer(NICKNAME1);
         assertEquals(1, service.getPlayers().size());
@@ -90,6 +89,7 @@ public class PlayerServiceTestWithoutFile {
 
     @Test
     @DisplayName("Списка нет - повторное добавление игроку очков")
+    @Tag("позитивные")
     public void iCanAddPointsAgain() {
         int playerId = service.createPlayer(NICKNAME1);
         Player player = service.getPlayerById(playerId);
@@ -98,6 +98,15 @@ public class PlayerServiceTestWithoutFile {
 
         int playerPointsFinal = service.addPoints(playerId,pointsToAdd);
         assertEquals(pointsToAdd + pointsToAdd, playerPointsFinal);
+    }
+
+    @Test
+    @DisplayName("Не могу добавить игрока с уже существущим именем")
+    @Tag("негативные")
+    public void iCanNotAddDuplicate() {
+        service.createPlayer(NICKNAME1);
+        assertThrows(IllegalArgumentException.class, () -> service.createPlayer(NICKNAME1));
+
     }
 
 }
