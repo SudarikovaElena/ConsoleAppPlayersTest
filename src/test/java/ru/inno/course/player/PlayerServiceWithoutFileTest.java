@@ -21,7 +21,7 @@ public class PlayerServiceWithoutFileTest {
     String NICKNAME1 = "Nikita";
     String NICKNAME2 = "Mariya";
     String NICKNAME3 = "Sonya";
-    int pointsToAdd = 45;
+    int pointsToAddBelow100 = 45;
 
     @BeforeEach
     public void SetUp() {
@@ -56,16 +56,6 @@ public class PlayerServiceWithoutFileTest {
     }
 
     @Test
-    @DisplayName("Добавление новому игроку очков. Предусловие: список удален")
-    @Tag("позитивные")
-    public void iCanAddPoints() {
-        int playerId = service.createPlayer(NICKNAME1);
-        int playerPoints = service.addPoints(playerId, pointsToAdd);
-
-        assertEquals(pointsToAdd, playerPoints);
-    }
-
-    @Test
     @DisplayName("Получение коллекции игроков. Предусловие: список удален")
     @Tag("позитивные")
     public void iCanGetPlayers() {
@@ -82,6 +72,54 @@ public class PlayerServiceWithoutFileTest {
 
     }
 
+    @ParameterizedTest
+    @DisplayName("Добавление новому игроку очков, добавляем менее 100. Предусловие: список удален")
+    @ValueSource(ints = {1, 45, 99})
+    @Tag("позитивные")
+    public void iCanAddPointsBelow100(int points) {
+        int playerId = service.createPlayer(NICKNAME1);
+        int playerPoints = service.addPoints(playerId, points);
+
+        assertEquals(points, playerPoints);
+    }
+
+    @ParameterizedTest
+    @DisplayName("Добавление новому игроку очков, можем добавить не более 100. Предусловие: список удален")
+    @ValueSource(ints = {100, 101, 1000})
+    @Tag("позитивные")
+    public void iCanNotAddPointsAbove100(int points) {
+        int playerId = service.createPlayer(NICKNAME1);
+        int playerPoints = service.addPoints(playerId, points);
+
+        assertEquals(100, playerPoints);
+    }
+
+    @ParameterizedTest
+    @DisplayName("Повторное добавление игроку очков, добавляем менее 100. Предусловие: список удален")
+    @ValueSource(ints = {1, 45, 99})
+    @Tag("позитивные")
+    public void iCanAddPointsAgainBelow100(int pointsBelow100) {
+        int playerId = service.createPlayer(NICKNAME1);
+        int playerPoints = service.addPoints(playerId, pointsBelow100);
+        assertEquals(pointsBelow100, playerPoints);
+
+        int playerPointsFinal = service.addPoints(playerId, pointsBelow100);
+        assertEquals(pointsBelow100 + pointsBelow100, playerPointsFinal);
+    }
+
+    @ParameterizedTest
+    @DisplayName("Повторное добавление игроку очков, можем добавить не более 100. Предусловие: список удален")
+    @ValueSource(ints = {100, 101, 1000})
+    @Tag("позитивные")
+    public void iCanAddPointsAgainAbove100(int pointsAbove100) {
+        int playerId = service.createPlayer(NICKNAME1);
+        int playerPoints = service.addPoints(playerId, pointsAbove100);
+        assertEquals(100, playerPoints);
+
+        int playerPointsFinal = service.addPoints(playerId, pointsAbove100);
+        assertEquals(200, playerPointsFinal);
+    }
+
     @Test
     @DisplayName("Удаление игрока. Предусловие: список удален")
     @Tag("позитивные")
@@ -91,18 +129,6 @@ public class PlayerServiceWithoutFileTest {
 
         service.deletePlayer(playerId);
         assertEquals(0, service.getPlayers().size());
-    }
-
-    @Test
-    @DisplayName("Повторное добавление игроку очков, добавляем менее 100. Предусловие: список удален")
-    @Tag("позитивные")
-    public void iCanAddPointsAgain() {
-        int playerId = service.createPlayer(NICKNAME1);
-        int playerPoints = service.addPoints(playerId, pointsToAdd);
-        assertEquals(pointsToAdd, playerPoints);
-
-        int playerPointsFinal = service.addPoints(playerId, pointsToAdd);
-        assertEquals(pointsToAdd + pointsToAdd, playerPointsFinal);
     }
 
     @Test

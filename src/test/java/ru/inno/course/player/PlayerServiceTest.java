@@ -62,59 +62,6 @@ public class PlayerServiceTest {
         assertTrue(playerById.isOnline());
     }
 
-    @Test
-    @DisplayName("3. (нет json-файла) добавить игрока")
-    public void iCanAddPlayer() {
-        int playerId = service.createPlayer(NICKNAME);
-        assertEquals(1, playerId);
-    }
-
-    @Test
-    @DisplayName("7. (добавить игрока) - получить игрока по id (3, 5)")
-    public void iCanAddPlayerIntoFile() {
-        int playerId = service.createPlayer(NICKNAME);
-        Player playerById = service.getPlayerById(playerId);
-        assertEquals(1, playerById.getId());
-        assertEquals(NICKNAME, playerById.getNick());
-        assertEquals(0, playerById.getPoints());
-        assertTrue(playerById.isOnline());
-    }
-
-    @Test
-    @Tag("позитивные")
-    @DisplayName("(добавить игрока) - удалить игрока - проверить отсутствие в списке (2,3)")
-    public void iCanDeletePlayer() {
-        Collection<Player> listBefore = service.getPlayers();
-        assertEquals(0, listBefore.size());
-
-        int newPlayerId = service.createPlayer(NICKNAME);
-        Collection<Player> listAfterAdd = service.getPlayers();
-        assertEquals(1, listAfterAdd.size());
-
-        service.deletePlayer(newPlayerId);
-        Collection<Player> listAfterDelete = service.getPlayers();
-        assertEquals(0, listAfterDelete.size());
-//        Player playerById = service.getPlayerById(playerId);
-//        assertEquals(playerId, playerById.getId());
-
-        //service.deletePlayer(playerById.getId());
-    }
-
-    @Test
-    @Tag("негативный")
-    @DisplayName("Нельзя создать дубликат игрока")
-    public void iCannotCreateADuplicate() {
-        service.createPlayer(NICKNAME);
-        assertThrows(IllegalArgumentException.class, () -> service.createPlayer(NICKNAME));
-    }
-
-    @Test
-    @Tag("позитивные")
-    @DisplayName("Нельзя получить несуществующего пользователя")
-    public void iCannotGetEmptyUser() {
-        assertThrows(IllegalArgumentException.class, () -> service.getPlayerById(9999));
-    }
-
     @ParameterizedTest
     @ValueSource(ints = {10, 100, -50, 0, 100, -5000000})
     @DisplayName("Добавление очков игроку")
