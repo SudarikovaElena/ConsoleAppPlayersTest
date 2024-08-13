@@ -117,6 +117,15 @@ public class PlayerServiceWithoutFileTest {
         assertEquals(3, playerById);
     }
 
+    @ParameterizedTest
+    @DisplayName("Можем создать игрока с именем от 1 до 15 символов. Предусловие: список удален")
+    @ValueSource(strings = {"X", "EduardUspenskiy"})
+    @Tag("позитивные")
+    public void playerNameFrom1To15Symbols(String name) {
+        int playerByID = service.createPlayer(name);
+        assertEquals(name, service.getPlayerById(playerByID).getNick());
+    }
+
     @Test
     @DisplayName("Не могу добавить игрока с уже существущим именем. Предусловие: список удален")
     @Tag("негативные")
@@ -128,19 +137,17 @@ public class PlayerServiceWithoutFileTest {
     }
 
     @Test
-    @DisplayName("Нельзя получить несуществующего пользователя. Предусловие: список удален")
+    @DisplayName("Нельзя получить несуществующего игрока. Предусловие: список удален")
     @Tag("негативные")
     public void iCanNotGetNonExistentPlayer() {
         assertThrows(NoSuchElementException.class, () -> service.getPlayerById(1000));
     }
 
-    @ParameterizedTest
-    @DisplayName("Можем создать игрока с именем от 1 до 15 символов. Предусловие: список удален")
-    @ValueSource(strings = {"X", "EduardUspenskiy"})
-    @Tag("позитивные")
-    public void playerNameFrom1To15Symbols(String name) {
-        int playerByID = service.createPlayer(name);
-        assertEquals(name, service.getPlayerById(playerByID).getNick());
+    @Test
+    @DisplayName("Нельзя удалить несуществующего игрока")
+    @Tag("негативные")
+    public void iCanNotDeleteNonExistentPlayer() {
+        assertThrows(NoSuchElementException.class, () -> service.deletePlayer(1000));
     }
 
 }
