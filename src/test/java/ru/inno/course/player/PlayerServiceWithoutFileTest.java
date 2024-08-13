@@ -13,7 +13,7 @@ import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class PlayerServiceTestWithoutFile {
+public class PlayerServiceWithoutFileTest {
 
     PlayerService service;
     String NICKNAME1 = "Nikita";
