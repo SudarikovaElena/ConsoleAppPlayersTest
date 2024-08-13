@@ -127,6 +127,13 @@ public class PlayerServiceWithoutFileTest {
     }
 
     @Test
+    @DisplayName("Нельзя удалить несуществующего игрока")
+    @Tag("негативные")
+    public void iCanNotDeleteNonExistentPlayer() {
+        assertThrows(NoSuchElementException.class, () -> service.deletePlayer(1000));
+    }
+
+    @Test
     @DisplayName("Не могу добавить игрока с уже существущим именем. Предусловие: список удален")
     @Tag("негативные")
     //Получается в этом случае нужно было заглянуть в реализацию метода, чтобы узнать, какое исключение он выбрасывает?
@@ -144,10 +151,10 @@ public class PlayerServiceWithoutFileTest {
     }
 
     @Test
-    @DisplayName("Нельзя удалить несуществующего игрока")
+    @DisplayName("Нельзя начислить очки несуществующему игроку. Предусловие: список удален")
     @Tag("негативные")
-    public void iCanNotDeleteNonExistentPlayer() {
-        assertThrows(NoSuchElementException.class, () -> service.deletePlayer(1000));
+    public void iCanNotAddPointsToNonExistentPlayer() {
+        assertThrows(NoSuchElementException.class, () -> service.addPoints(1000,50));
     }
 
 }
