@@ -8,10 +8,7 @@ import ru.inno.course.player.service.PlayerServiceImpl;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -108,18 +105,8 @@ public class PlayerServiceTestWithoutFile {
     }
 
     @Test
-    @DisplayName("Не могу добавить игрока с уже существущим именем. Предусловие: список удален")
-    @Tag("негативные")
-    //Получается в этом случае нужно было заглянуть в реализацию метода, чтобы узнать, какое исключение он выбрасывает?
-    public void iCanNotAddDuplicate() {
-        service.createPlayer(NICKNAME1);
-
-        assertThrows(IllegalArgumentException.class, () -> service.createPlayer(NICKNAME1));
-
-    }
-
-    @Test
     @DisplayName("ID игрока остается уникальным после удаления и добавления игрока. Предусловие: список удален")
+    @Tag("позитивные")
     public void playerIdIsUnique() {
         service.createPlayer(NICKNAME1);
         service.createPlayer(NICKNAME2);
@@ -127,6 +114,17 @@ public class PlayerServiceTestWithoutFile {
         int playerById = service.createPlayer(NICKNAME3);
 
         assertEquals(3, playerById);
+    }
+
+    @Test
+    @DisplayName("Не могу добавить игрока с уже существущим именем. Предусловие: список удален")
+    @Tag("негативные")
+    //Получается в этом случае нужно было заглянуть в реализацию метода, чтобы узнать, какое исключение он выбрасывает?
+    public void iCanNotAddDuplicatedPlayer() {
+        service.createPlayer(NICKNAME1);
+
+        assertThrows(IllegalArgumentException.class, () -> service.createPlayer(NICKNAME1));
+
     }
 
 }
