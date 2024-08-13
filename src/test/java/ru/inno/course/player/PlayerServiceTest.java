@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 // 2. Главный код ничего не знает про тесты.
 // 3. В тестах не должно быть if'ов
 
-@ExtendWith(MyTestWatcher.class)
+//@ExtendWith(MyTestWatcher.class)
 //@ExtendWith(ParameterResolver.class)
 //@ExtendWith(BeforeEachDemo.class)
 public class PlayerServiceTest {

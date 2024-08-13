@@ -20,6 +20,7 @@ public class PlayerServiceTestWithoutFile {
     PlayerService service;
     String NICKNAME1 = "Nikita";
     String NICKNAME2 = "Mariya";
+    String NICKNAME3 = "Sonya";
     int pointsToAdd = 45;
 
     @BeforeEach
@@ -33,17 +34,21 @@ public class PlayerServiceTestWithoutFile {
     }
 
     @Test
-    @DisplayName("Списка нет - добавление нового игрока")
+    @DisplayName("Добавление нового игрока. Предусловие: список удален")
+    @Tags({@Tag("позитивный"), @Tag("CRITICAL")})
     public void iCanAddPlayer() {
         int playerId = service.createPlayer(NICKNAME1);
-        assertEquals(1,playerId);
+
+        assertEquals(1, playerId);
     }
 
     @Test
-    @DisplayName("Списка нет - получение игрока по ID")
+    @DisplayName("Получение игрока по ID. Предусловие: список удален")
+    @Tags({@Tag("позитивный"), @Tag("CRITICAL")})
     public void iCanGetPlayerById() {
         int playerId = service.createPlayer(NICKNAME1);
         Player player = service.getPlayerById(playerId);
+
         assertEquals(1, player.getId());
         assertEquals(NICKNAME1, player.getNick());
         assertEquals(0, player.getPoints());
@@ -51,62 +56,77 @@ public class PlayerServiceTestWithoutFile {
     }
 
     @Test
-    @DisplayName("Списка нет - добавление игроку очков") // Нужно делать, когда список есть? Когда можем взять одного из игроков
-    // узнать сколько у него очков и добавить? Нет, это может быть уже повторное добавление очков, нам нужно убдитьсся что игроку
-    //еще не добавлялись очки, т.е. нужно таки создать его с нуля в этом же тесте
+    @DisplayName("Добавление новому игроку очков. Предусловие: список удален")
     @Tag("позитивные")
     public void iCanAddPoints() {
         int playerId = service.createPlayer(NICKNAME1);
         Player player = service.getPlayerById(playerId);
-        int playerPoints = service.addPoints(playerId,pointsToAdd);
+        int playerPoints = service.addPoints(playerId, pointsToAdd);
+
         assertEquals(pointsToAdd, playerPoints);
     }
 
     @Test
-    @DisplayName("Списка нет - получение коллекции игроков")
+    @DisplayName("Получение коллекции игроков. Предусловие: список удален")
     @Tag("позитивные")
     public void iCanGetPlayers() {
         int player1Id = service.createPlayer(NICKNAME1);
         int player2Id = service.createPlayer(NICKNAME2);
-//        Collection<Player> players = (List<Player>) service.getPlayers(); //Возникает ошибка в проверках ниже - непонятно,
-//        как работать с Collection<Player> - как достать 1го игрока? 2го?
-//        assertEquals(NICKNAME1, players.get(0).getNick());
-//        assertEquals(NICKNAME2, players.get(1).getNick());
         Collection<Player> players = service.getPlayers();
+        // Переводим коллекцию в массив, чтобы обратиться к первым двум элементам
+        //Player[] playersArray = (Player[]) players.toArray();
+        Player[] playersArray = players.toArray(new Player[0]);
+
         assertEquals(2, (long) players.size());
+        assertEquals(NICKNAME1, playersArray[0].getNick());
+        assertEquals(NICKNAME2, playersArray[1].getNick());
 
     }
 
     @Test
-    @DisplayName("Списка нет - удаление игрока")
+    @DisplayName("Удаление игрока. Предусловие: список удален")
     @Tag("позитивные")
     public void iCanDeletePlayer() {
         int playerId = service.createPlayer(NICKNAME1);
         assertEquals(1, service.getPlayers().size());
+
         service.deletePlayer(playerId);
         assertEquals(0, service.getPlayers().size());
     }
 
     @Test
-    @DisplayName("Списка нет - повторное добавление игроку очков")
+    @DisplayName("Повторное добавление игроку очков, добавляем менее 100. Предусловие: список удален")
     @Tag("позитивные")
     public void iCanAddPointsAgain() {
         int playerId = service.createPlayer(NICKNAME1);
         Player player = service.getPlayerById(playerId);
-        int playerPoints = service.addPoints(playerId,pointsToAdd);
+        int playerPoints = service.addPoints(playerId, pointsToAdd);
         assertEquals(pointsToAdd, playerPoints);
 
-        int playerPointsFinal = service.addPoints(playerId,pointsToAdd);
+        int playerPointsFinal = service.addPoints(playerId, pointsToAdd);
         assertEquals(pointsToAdd + pointsToAdd, playerPointsFinal);
     }
 
     @Test
-    @DisplayName("Не могу добавить игрока с уже существущим именем")
+    @DisplayName("Не могу добавить игрока с уже существущим именем. Предусловие: список удален")
     @Tag("негативные")
+    //Получается в этом случае нужно было заглянуть в реализацию метода, чтобы узнать, какое исключение он выбрасывает?
     public void iCanNotAddDuplicate() {
         service.createPlayer(NICKNAME1);
+
         assertThrows(IllegalArgumentException.class, () -> service.createPlayer(NICKNAME1));
 
+    }
+
+    @Test
+    @DisplayName("ID игрока остается уникальным после удаления и добавления игрока. Предусловие: список удален")
+    public void playerIdIsUnique() {
+        service.createPlayer(NICKNAME1);
+        service.createPlayer(NICKNAME2);
+        service.deletePlayer(1);
+        int playerById = service.createPlayer(NICKNAME3);
+
+        assertEquals(3, playerById);
     }
 
 }
