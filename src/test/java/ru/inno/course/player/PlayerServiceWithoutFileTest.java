@@ -1,6 +1,8 @@
 package ru.inno.course.player;
 
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import ru.inno.course.player.model.Player;
 import ru.inno.course.player.service.PlayerService;
 import ru.inno.course.player.service.PlayerServiceImpl;
@@ -127,8 +129,18 @@ public class PlayerServiceWithoutFileTest {
 
     @Test
     @DisplayName("Нельзя получить несуществующего пользователя. Предусловие: список удален")
+    @Tag("негативные")
     public void iCanNotGetNonExistentPlayer() {
         assertThrows(NoSuchElementException.class, () -> service.getPlayerById(1000));
+    }
+
+    @ParameterizedTest
+    @DisplayName("Можем создать игрока с именем от 1 до 15 символов. Предусловие: список удален")
+    @ValueSource(strings = {"X", "EduardUspenskiy"})
+    @Tag("позитивные")
+    public void playerNameFrom1To15Symbols(String name) {
+        int playerByID = service.createPlayer(name);
+        assertEquals(name, service.getPlayerById(playerByID).getNick());
     }
 
 }
