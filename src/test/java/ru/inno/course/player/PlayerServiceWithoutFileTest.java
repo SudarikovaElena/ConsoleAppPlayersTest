@@ -21,7 +21,6 @@ public class PlayerServiceWithoutFileTest {
     String NICKNAME1 = "Nikita";
     String NICKNAME2 = "Mariya";
     String NICKNAME3 = "Sonya";
-    int pointsToAddBelow100 = 45;
 
     @BeforeEach
     public void SetUp() {
