@@ -1,4 +1,4 @@
-package ru.inno.course.player;
+package ru.inno.course.player.DmitryTest;
 
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;

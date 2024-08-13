@@ -180,7 +180,7 @@ public class PlayerServiceWithoutFileTest {
     @DisplayName("Нельзя начислить очки несуществующему игроку. Предусловие: список удален")
     @Tag("негативные")
     public void iCanNotAddPointsToNonExistentPlayer() {
-        assertThrows(NoSuchElementException.class, () -> service.addPoints(1000,50));
+        assertThrows(NoSuchElementException.class, () -> service.addPoints(1000, 50));
     }
 
 }
