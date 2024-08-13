@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -57,7 +58,6 @@ public class PlayerServiceTestWithoutFile {
     @Tag("позитивные")
     public void iCanAddPoints() {
         int playerId = service.createPlayer(NICKNAME1);
-        Player player = service.getPlayerById(playerId);
         int playerPoints = service.addPoints(playerId, pointsToAdd);
 
         assertEquals(pointsToAdd, playerPoints);
@@ -67,8 +67,8 @@ public class PlayerServiceTestWithoutFile {
     @DisplayName("Получение коллекции игроков. Предусловие: список удален")
     @Tag("позитивные")
     public void iCanGetPlayers() {
-        int player1Id = service.createPlayer(NICKNAME1);
-        int player2Id = service.createPlayer(NICKNAME2);
+        service.createPlayer(NICKNAME1);
+        service.createPlayer(NICKNAME2);
         Collection<Player> players = service.getPlayers();
         // Переводим коллекцию в массив, чтобы обратиться к первым двум элементам
         //Player[] playersArray = (Player[]) players.toArray();
@@ -96,7 +96,6 @@ public class PlayerServiceTestWithoutFile {
     @Tag("позитивные")
     public void iCanAddPointsAgain() {
         int playerId = service.createPlayer(NICKNAME1);
-        Player player = service.getPlayerById(playerId);
         int playerPoints = service.addPoints(playerId, pointsToAdd);
         assertEquals(pointsToAdd, playerPoints);
 
@@ -124,7 +123,12 @@ public class PlayerServiceTestWithoutFile {
         service.createPlayer(NICKNAME1);
 
         assertThrows(IllegalArgumentException.class, () -> service.createPlayer(NICKNAME1));
+    }
 
+    @Test
+    @DisplayName("Нельзя получить несуществующего пользователя. Предусловие: список удален")
+    public void iCanNotGetNonExistentPlayer() {
+        assertThrows(NoSuchElementException.class, () -> service.getPlayerById(1000));
     }
 
 }
